@@ -3,8 +3,8 @@
 
 
 #include <stdint.h>
-#define SRAM_DTW_PREV_BASE  0x0000
-#define SRAM_DTW_CURR_BASE  0x0400
+#define SRAM_DTW_PREV_BASE  0x3000
+#define SRAM_DTW_CURR_BASE  0x3400
 #define PREV_ADDR(i) (SRAM_DTW_PREV_BASE + ((i) << 2))
 #define CURR_ADDR(i) (SRAM_DTW_CURR_BASE + ((i) << 2))
 // init bus

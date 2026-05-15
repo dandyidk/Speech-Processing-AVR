@@ -13,7 +13,7 @@ volatile uint8_t frame_start_index = 0;
 
 void Audio_Init(void) {
 
-    ADMUX = (1 << REFS0) | (1 << ADLAR);
+    ADMUX = (1 << REFS0) | (1 << ADLAR); //left adjust 8 bit mode
 
     ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1);
     ADCSRA |= (1 << ADIE);

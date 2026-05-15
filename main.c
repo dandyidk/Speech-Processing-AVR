@@ -4,6 +4,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -15,56 +16,73 @@
 #include "ext_int.h"
 #include "sram.h"
 
-// ================= CONFIG =================
+// ============================================================
+// CONFIGURATION
+// ============================================================
 #define MAX_SAMPLES 8000
 #define CMD_BUF_SIZE 16
+#define MAX_FRAMES 40
 
+// ============================================================
+// GLOBAL STATE
+// ============================================================
 
-// ================= GLOBALS =================
-volatile uint8_t recording = 0;
-volatile uint8_t prev_recording = 0;
+// Recording control
+volatile uint8_t recording = 0;      // 1 = recording active
+volatile uint8_t prev_recording = 0; // edge detection for state change
+volatile uint8_t process_start = 0;  // Processing flag for DSP mode
 
-volatile uint8_t audio_sample = 0;
-volatile uint8_t sample_ready = 0;
+// Audio data
+volatile uint8_t audio_sample = 0; // latest ADC sample (8-bit)
+volatile uint8_t sample_ready = 0; // flag for new sample availability
 
-volatile uint16_t sample_count = 0;
-volatile uint8_t write_index = 0;
+// SRAM buffer control
+volatile uint16_t write_index = 0; // current write position in SRAM
 
+// UART command buffer
 volatile char uart_buf[CMD_BUF_SIZE];
 volatile uint8_t uart_idx = 0;
 volatile uint8_t cmd_ready = 0;
 
-bool DataCollection = 0;
+// Mode flag
+// 1 = stream over UART (video mode)
+// 0 = store into SRAM (offline processing)
+bool VideoRecord = 0;
 
-uint8_t mcusr_mirror __attribute__ ((section (".noinit")));
+// Reset cause register mirror
+uint8_t mcusr_mirror __attribute__((section(".noinit")));
 
-void get_mcusr(void) __attribute__((naked)) __attribute__((section(".init3")));
-
+// ============================================================
+// RESET CAUSE CAPTURE
+// ============================================================
+void get_mcusr(void) __attribute__((naked, section(".init3")));
 void get_mcusr(void)
 {
     mcusr_mirror = MCUSR;
     MCUSR = 0;
 }
-// ================= TIMER ISR =================
+
+// ============================================================
+// TIMER1 ISR (8 kHz sample trigger)
+// ============================================================
 ISR(TIMER1_COMPA_vect)
 {
     if (recording)
-        ADCSRA |= (1 << ADSC);
+    {
+        ADCSRA |= (1 << ADSC); // start ADC conversion
+    }
 }
 
-// ================= BUTTON ISR =================
+// ============================================================
+// EXTERNAL INTERRUPT (START/STOP BUTTON)
+// ============================================================
 ISR(INT0_vect)
 {
     recording ^= 1;
 
     if (recording)
     {
-        sample_count = 0;
         write_index = 0;
-
-        frame_ready = false;
-        frame_start_index = 0;
-
         ADCSRA |= (1 << ADEN);
     }
     else
@@ -73,36 +91,40 @@ ISR(INT0_vect)
     }
 }
 
-// ================= ADC ISR =================
+// ============================================================
+// ADC COMPLETE ISR
+// ============================================================
 ISR(ADC_vect)
 {
     if (!recording)
         return;
 
-    audio_sample = ADCH;
-    sample_ready = 1;
-
-    audio_buffer[write_index++] = audio_sample;
-    sample_count++;
-
-    // frame ready every 128 samples
-    if (write_index == 128 || write_index == 0)
+    if (write_index < MAX_SAMPLES)
     {
-        frame_start_index = (write_index == 128) ? 128 : 0;
-        frame_ready = true;
+        audio_sample = ADCH;
+        sample_ready = 1;
+
+        // Store only in SRAM mode
+        if (!VideoRecord)
+        {
+            SRAM_write(write_index, audio_sample);
+        }
+
+        write_index++;
     }
-
-    // stop after max samples
-    if (sample_count >= MAX_SAMPLES)
+    else
+    {
         recording = 0;
+    }
 }
-// ================= USART ISR =================
 
+// ============================================================
+// UART RX ISR (command parser)
+// ============================================================
 ISR(USART_RXC_vect)
 {
     char c = UDR;
 
-    // end of command
     if (c == '\n' || c == '\r')
     {
         uart_buf[uart_idx] = '\0';
@@ -118,17 +140,24 @@ ISR(USART_RXC_vect)
     }
 }
 
+// ============================================================
+// UART COMMAND HANDLER
+// ============================================================
 void process_uart_command(void)
 {
-    if (strcmp((char*)uart_buf, "collect") == 0)
+    if (strcmp((char *)uart_buf, "stream") == 0)
     {
-        DataCollection = 1;
-        UART_TxString("MODE: COLLECT\r\n");
+        VideoRecord = 1;
+        UART_TxString("MODE: STREAMING\r\n");
+        LCD_Clear();
+        LCD_String("Stream mode");
     }
-    else if (strcmp((char*)uart_buf, "dsp") == 0)
+    else if (strcmp((char *)uart_buf, "dsp") == 0)
     {
-        DataCollection = 0;
+        VideoRecord = 0;
         UART_TxString("MODE: DSP\r\n");
+        LCD_Clear();
+        LCD_String("DSP mode");
     }
     else
     {
@@ -136,11 +165,10 @@ void process_uart_command(void)
     }
 }
 
-// ================= MAIN =================
+
 int main(void)
 {
-    UART_Init(115200);
-    DEBUG_PrintRAMInfo();
+    UART_Init(230400);
 
     LCD_Init();
     LCD_Clear();
@@ -152,86 +180,99 @@ int main(void)
     SRAM_init();
 
     sei();
+
     UART_TxString("RESET FLAG: ");
     UART_TxNum(mcusr_mirror);
     UART_TxString("\r\n");
 
-    uint8_t frame_count = 0;
-
     while (1)
     {
+        // Handle UART commands
         if (cmd_ready)
-{
-    process_uart_command();
-    cmd_ready = 0;
-}
-        // recording started
+        {
+            process_uart_command();
+            cmd_ready = 0;
+        }
+
+        // Recording start event
         if (recording && !prev_recording)
         {
             LCD_Clear();
             LCD_String("Recording...");
-
             UART_TxString("START\n");
-
             prev_recording = 1;
         }
 
-        // recording stopped
-        else if (!recording && prev_recording&&DataCollection)
+        // Recording stop event
+        else if (!recording && prev_recording)
         {
             LCD_Clear();
             LCD_String("Stopped");
+            UART_TxString("STOP\n");
+            prev_recording = 0;
+            process_start = 1;
+        }
+
+        // Real-time streaming mode
+        if (recording && VideoRecord && sample_ready)
+        {
+            sample_ready = 0;
+            UART_sendByte(audio_sample);
+        }
+
+        // ================= DSP MODE =================
+        if (!VideoRecord && process_start)
+        {
+            process_start = 0;
+
+            uint8_t frame_count = 0;
+
+            LCD_Clear();
+            LCD_String("Extracting...");
+            UART_TxString("EXTRACTING\n");
+
+            uint16_t sram_index = 0;
+
+            while ((sram_index + FRAME_SIZE) <= write_index &&
+                   frame_count < MAX_FRAMES)
+            {
+
+                for (uint16_t i = 0; i < FRAME_SIZE; i++)
+                {
+                    audio_buffer[i] = SRAM_read(sram_index++);
+                }
+                DSP_ExtractFeatures(0, frame_count);
+                DEBUG_PrintFrame(frame_count);
+
+                frame_count++;
+            }
+
+
+            recording = 0;
+
+            ADCSRA &= ~(1 << ADEN);
 
             UART_TxString("STOP\n");
 
-            prev_recording = 0;
+            LCD_Clear();
+            LCD_String("Processing...");
+
+            uint8_t word_idx = DTW_ClassifyWord(frame_count);
+
+            char word[16];
+
+            DTW_GetWordString(word_idx, word);
+
+            LCD_Clear();
+
+            LCD_SetCursor(0, 0);
+            LCD_String("Detected:");
+
+            LCD_SetCursor(1, 0);
+            LCD_String(word);
+
+            live_frame_count = 0;
             frame_count = 0;
-        }
-
-        // ================= DATA COLLECTION =================
-        if (DataCollection && sample_ready)
-        {
-            UART_sendByte(audio_sample);
-            sample_ready = 0;
-        }
-
-// ================= DSP MODE =================
-        if (!DataCollection && frame_ready && recording)  // Only process while actively recording
-        {
-            frame_ready = false;
-            
-            // CRITICAL: Stop ADC during DSP to prevent buffer corruption
-            uint8_t adc_was_on = (ADCSRA & (1 << ADEN));
-            ADCSRA &= ~(1 << ADEN);  // Disable ADC            
-            DSP_ExtractFeatures(frame_start_index, frame_count);
-            DEBUG_PrintFrame(frame_count);
-            frame_count++;
-            
-            // Re-enable ADC if we're still recording and haven't hit 40 yet
-            if (recording && frame_count < 40 && adc_was_on)
-                ADCSRA |= (1 << ADEN);
-            
-            if (frame_count >= 40)
-            {
-                // Stop recording completely before classification
-                recording = 0;
-                ADCSRA &= ~(1 << ADEN);
-                LCD_Clear();
-                LCD_String("Processing...");
-                DEBUG_PrintRAMInfo();
-                uint8_t word_idx = DTW_ClassifyWord_DEBUG(frame_count);
-                
-                char word[16];
-                DTW_GetWordString(word_idx, word);
-                
-                LCD_Clear();
-                LCD_SetCursor(0, 0);
-                LCD_String("Detected:");
-                LCD_SetCursor(1, 0);
-                LCD_String(word);
-                
-                frame_count = 0;  // Reset for next recording
-            }
         }
     }
 }

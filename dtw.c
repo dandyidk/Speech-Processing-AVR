@@ -1,149 +1,168 @@
 #include "dtw.h"
-#include "dsp.h"             
-#include "dtw_templates.h"   // This is the ONLY file allowed to include this!
-#include "uart.h"            
+#include "dsp.h"
+#include "dtw_templates.h" // This is the ONLY file allowed to include this!
+#include "uart.h"
 #include <avr/pgmspace.h>
-#include <stdlib.h>          
+#include <stdlib.h>
 #include "sram.h"
-void DEBUG_PrintRAMInfo(void) {
-    // Measure free stack space by scanning for 0xAA fill pattern.
-    // Add this to the TOP of main(), before sei():
-    //
-    //   extern uint8_t _end;       // end of BSS (start of heap)
-    //   extern uint8_t __stack;    // top of stack
-    //   uint8_t *p = &_end;
-    //   while (p < (uint8_t*)SP) *p++ = 0xAA;
-    //
-    // Then call this function after a few seconds of running:
- 
-    extern uint8_t _end;
-    uint8_t *p = &_end;
-    uint16_t free_count = 0;
-    while (*p == 0xAA && p < (uint8_t*)0x085F) {
-        free_count++;
-        p++;
-    }
-    UART_TxString("FREE_RAM=");
-    UART_TxNum(free_count);
-    UART_TxString("\r\n");
-}
-static uint32_t DTW_Distance(uint8_t live_len, uint8_t tpl_idx) {
+#include <string.h>
+
+
+
+static uint32_t DTW_Distance(uint8_t live_len, uint8_t tpl_idx)
+{
     uint8_t tpl_len = pgm_read_byte(&template_lengths[tpl_idx]);
-    const uint8_t* tpl_ptr = (const uint8_t*)pgm_read_word(&template_ptrs[tpl_idx]);
+    const uint8_t *tpl_ptr = (const uint8_t *)pgm_read_word(&template_ptrs[tpl_idx]);
+
+    uint32_t prev[MAX_TEMPLATE_FRAMES];
+    uint32_t curr[MAX_TEMPLATE_FRAMES];
     const uint32_t INF = 0x3FFFFFFF;
 
     int8_t w = DTW_BAND_W;
     if (abs((int)live_len - (int)tpl_len) > w)
+    {
         w = abs((int)live_len - (int)tpl_len);
+    }
 
-    // Init prev to INF in external SRAM
-    for (uint8_t j = 0; j < tpl_len; j++) {
-        SRAM_write32(PREV_ADDR(j), INF);
+    for (uint8_t j = 0; j < tpl_len; j++)
+    {
+        prev[j] = INF;
+        curr[j] = INF;
     }
 
     // First row
-    for (uint8_t j = 0; j < tpl_len; j++) {
-        if (abs(0 - (int)j) > w) continue;
+    for (int8_t j = 0; j < tpl_len; j++)
+    {
+        if (abs(0 - j) > w)
+            continue;
         uint16_t cost = 0;
-        for (uint8_t f = 0; f < N_FEATURES; f++) {
-            uint8_t live_val = live_features[0][f];
-            uint8_t tpl_val  = pgm_read_byte(tpl_ptr + (j * N_FEATURES) + f);
-            uint16_t diff    = abs((int)live_val - (int)tpl_val);
-            if (f >= 4) diff <<= 1;
+        for (uint8_t f = 0; f < N_FEATURES; f++)
+        {
+            uint8_t live_val = live_features[0][f]; // Read direct from RAM
+            uint8_t tpl_val = pgm_read_byte(tpl_ptr + (j * N_FEATURES) + f);
+            uint16_t diff = abs((int)live_val - (int)tpl_val);
+            if (f >= 4)
+                diff <<= 1;
             cost += diff;
         }
-        uint32_t prev_val = (j == 0) ? 0 : SRAM_read32(PREV_ADDR(j - 1));
-        SRAM_write32(PREV_ADDR(j), (j == 0) ? cost : prev_val + cost);
+        if (j == 0)
+            prev[j] = cost;
+        else
+            prev[j] = prev[j - 1] + cost;
     }
 
-    // Fill matrix row by row
-    for (uint8_t i = 1; i < live_len; i++) {
-        // Init curr row to INF
-        uint8_t j_start = (i > w) ? (i - w) : 0;
-        uint8_t j_end   = (i + w + 1 < tpl_len) ? (i + w + 1) : tpl_len;
-
-        // Zero out only the band we'll write (saves SRAM writes)
+    // Fill matrix
+    for (uint8_t i = 1; i < live_len; i++)
+    {
         for (uint8_t j = 0; j < tpl_len; j++)
-            SRAM_write32(CURR_ADDR(j), INF);
+            curr[j] = INF;
 
-        for (uint8_t j = j_start; j < j_end; j++) {
+        int8_t j_start = i - w;
+        if (j_start < 0)
+            j_start = 0;
+        int8_t j_end = i + w + 1;
+        if (j_end > tpl_len)
+            j_end = tpl_len;
+
+        for (int8_t j = j_start; j < j_end; j++)
+        {
             uint16_t cost = 0;
-            for (uint8_t f = 0; f < N_FEATURES; f++) {
-                uint8_t live_val = live_features[i][f];
-                uint8_t tpl_val  = pgm_read_byte(tpl_ptr + (j * N_FEATURES) + f);
-                uint16_t diff    = abs((int)live_val - (int)tpl_val);
-                if (f >= 4) diff <<= 1;
+            for (uint8_t f = 0; f < N_FEATURES; f++)
+            {
+                uint8_t live_val = live_features[i][f]; // Read direct from RAM
+                uint8_t tpl_val = pgm_read_byte(tpl_ptr + (j * N_FEATURES) + f);
+                uint16_t diff = abs((int)live_val - (int)tpl_val);
+                if (f >= 4)
+                    diff <<= 1;
                 cost += diff;
             }
 
-            uint32_t a = (j > 0) ? SRAM_read32(CURR_ADDR(j - 1)) : INF;
-            uint32_t b = SRAM_read32(PREV_ADDR(j));
-            uint32_t c = (j > 0) ? SRAM_read32(PREV_ADDR(j - 1)) : INF;
+            uint32_t min_prev = INF;
+            if (j > 0 && curr[j - 1] < min_prev)
+                min_prev = curr[j - 1];
+            if (prev[j] < min_prev)
+                min_prev = prev[j];
+            if (j > 0 && prev[j - 1] < min_prev)
+                min_prev = prev[j - 1];
 
-            uint32_t min_prev = a;
-            if (b < min_prev) min_prev = b;
-            if (c < min_prev) min_prev = c;
-
-            SRAM_write32(CURR_ADDR(j), (uint32_t)cost + min_prev);
+            curr[j] = cost + min_prev;
         }
-
-        // Swap curr -> prev
         for (uint8_t j = 0; j < tpl_len; j++)
-            SRAM_write32(PREV_ADDR(j), SRAM_read32(CURR_ADDR(j)));
+            prev[j] = curr[j];
     }
 
-    uint32_t result = SRAM_read32(PREV_ADDR(tpl_len - 1));
-    return result / (live_len + tpl_len);
+    uint32_t final_cost = prev[tpl_len - 1];
+    return final_cost / (live_len + tpl_len);
 }
 
-uint8_t DTW_ClassifyWord(uint8_t num_frames) {
-    UART_TxString("Running DTW against Templates...\r\n");
-    uint32_t best_dist = 0xFFFFFFFF;
-    uint8_t best_tpl_idx = 0;
-    uint8_t t = 0;
-    for (t = 0; t < TOTAL_TEMPLATES; t++) {
-        
-        uint32_t dist = DTW_Distance(num_frames, t);
-        if (dist < best_dist) {
-            best_dist = dist;
-            best_tpl_idx = t;
-        }
-    }
-
-    
-    uint8_t recognized_word_idx = pgm_read_byte(&template_labels[best_tpl_idx]);
-    
-    char buffer[16];
-    DTW_GetWordString(recognized_word_idx, buffer); 
-    
-    UART_TxString("\r\nMATCH FOUND: ");
-    UART_TxString(buffer);
-    UART_TxString(" (Score: ");
-    UART_TxNum(best_dist);
-    UART_TxString(")\r\n\r\n");
-    
-    return recognized_word_idx;
-}
-
-// Helper to pass strings to main.c without exposing the headers
-void DTW_GetWordString(uint8_t word_idx, char* out_str) {
-    const char* word_ptr = (const char*)pgm_read_word(&word_labels[word_idx]);
-    strcpy_P(out_str, word_ptr);
-}
-uint8_t DTW_ClassifyWord_DEBUG(uint8_t num_frames) {
+uint8_t DTW_ClassifyWord(uint8_t num_frames)
+{
+    uint32_t best_word_dist[N_WORDS];
+    uint8_t best_word_tpl[N_WORDS];
     UART_TxString("\r\n--- DTW ---\r\n");
     UART_TxString("live_frames=");
     UART_TxNum(num_frames);
     UART_TxString("\r\n");
- 
+
     uint32_t best_dist = 0xFFFFFFFF;
-    uint8_t  best_tpl_idx = 0;
- 
-    for (uint8_t t = 0; t < TOTAL_TEMPLATES; t++) {
+    uint8_t best_tpl_idx = 0;
+
+    for (uint8_t w = 0; w < N_WORDS; w++)
+    {
+        best_word_dist[w] = 0xFFFFFFFF;
+        best_word_tpl[w] = 0xFF;
+    }
+//================= VAD =====================
+    //find speech boundaries using STE (feat[0])
+    uint8_t first = 0;
+    for (uint8_t f = 0; f < num_frames; f++)
+    {
+        if (live_features[f][0] >= VAD_THRESHOLD)
+        {
+            first = f;
+            break;
+        }
+    }
+
+    uint8_t last = num_frames - 1;
+    for (int8_t f = (int8_t)(num_frames - 1); f >= 0; f--)
+    {
+        if (live_features[f][0] >= VAD_THRESHOLD)
+        {
+            last = (uint8_t)f;
+            break;
+        }
+    }
+
+    // shift active window to index 0 (in-place)
+    uint8_t trimmed = last - first + 1;
+    if (first > 0)
+    {
+        for (uint8_t f = 0; f < trimmed; f++)
+            for (uint8_t k = 0; k < 8; k++)
+                live_features[f][k] = live_features[first + f][k];
+    }
+
+    live_frame_count = trimmed;
+
+    UART_TxString("VAD: first=");
+    UART_TxNum(first);
+    UART_TxString(" last=");
+    UART_TxNum(last);
+    UART_TxString(" trimmed=");
+    UART_TxNum(trimmed);
+    UART_TxString("\r\n");
+
+    for (uint8_t t = 0; t < TOTAL_TEMPLATES; t++)
+    {
         uint8_t tpl_len = pgm_read_byte(&template_lengths[t]);
-        uint32_t dist   = DTW_Distance(num_frames, t);
- 
-        // Print: t0 len=12 dist=4321
+
+        uint32_t dist = DTW_Distance(num_frames, t);
+        if (dist < best_dist)
+        {
+            best_dist = dist;
+            best_tpl_idx = t;
+        }
         UART_TxString("t");
         UART_TxNum(t);
         UART_TxString(" len=");
@@ -151,17 +170,55 @@ uint8_t DTW_ClassifyWord_DEBUG(uint8_t num_frames) {
         UART_TxString(" d=");
         UART_TxNum(dist);
         UART_TxString("\r\n");
- 
-        if (dist < best_dist) {
-            best_dist     = dist;
-            best_tpl_idx  = t;
-        }
     }
- 
+    UART_TxString("\r\n--- WORD RANKING ---\r\n");
+
+    uint8_t used[N_WORDS] = {0};
+
+    for (uint8_t rank = 0; rank < N_WORDS; rank++)
+    {
+
+        uint32_t rank_best_dist = 0xFFFFFFFF;
+        uint8_t rank_best_word = 0xFF;
+
+        // Find next-best unused word
+        for (uint8_t w = 0; w < N_WORDS; w++)
+        {
+
+            if (used[w])
+                continue;
+
+            if (best_word_dist[w] < rank_best_dist)
+            {
+                rank_best_dist = best_word_dist[w];
+                rank_best_word = w;
+            }
+        }
+
+        if (rank_best_word == 0xFF)
+            break;
+
+        used[rank_best_word] = 1;
+
+        char wbuf[16];
+        DTW_GetWordString(rank_best_word, wbuf);
+
+        UART_TxNum(rank + 1);
+        UART_TxString(": ");
+        UART_TxString(wbuf);
+
+        UART_TxString("  tpl=");
+        UART_TxNum(best_word_tpl[rank_best_word]);
+
+        UART_TxString("  dist=");
+        UART_TxNum(best_word_dist[rank_best_word]);
+
+        UART_TxString("\r\n");
+    }
     uint8_t word_idx = pgm_read_byte(&template_labels[best_tpl_idx]);
     char buffer[16];
     DTW_GetWordString(word_idx, buffer);
- 
+
     UART_TxString("BEST: t");
     UART_TxNum(best_tpl_idx);
     UART_TxString(" -> ");
@@ -169,6 +226,13 @@ uint8_t DTW_ClassifyWord_DEBUG(uint8_t num_frames) {
     UART_TxString(" score=");
     UART_TxNum(best_dist);
     UART_TxString("\r\n");
- 
+
     return word_idx;
+}
+
+// Helper to pass strings to main.c without exposing the headers
+void DTW_GetWordString(uint8_t word_idx, char *out_str)
+{
+    const char *word_ptr = (const char *)pgm_read_word(&word_labels[word_idx]);
+    strcpy_P(out_str, word_ptr);
 }

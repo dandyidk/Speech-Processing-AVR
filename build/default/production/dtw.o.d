@@ -8,7 +8,7 @@ build/default/production/dtw.o.d build/default/production/dtw.o: dtw.c \
  /usr/lib/avr/include/avr/portpins.h /usr/lib/avr/include/avr/common.h \
  /usr/lib/avr/include/avr/version.h /usr/lib/avr/include/avr/fuse.h \
  /usr/lib/avr/include/avr/lock.h uart.h /usr/lib/avr/include/stdlib.h \
- sram.h
+ sram.h /usr/lib/avr/include/string.h
 
 dtw.h:
 
@@ -47,3 +47,5 @@ uart.h:
 /usr/lib/avr/include/stdlib.h:
 
 sram.h:
+
+/usr/lib/avr/include/string.h:
