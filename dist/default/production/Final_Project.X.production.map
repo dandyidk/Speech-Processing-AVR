@@ -36,7 +36,7 @@ Archive member included to satisfy reference by file (symbol)
 Allocating common symbols
 Common symbol       size              file
 
-live_features       0x140             build/default/production/dsp.o
+live_features       0x168             build/default/production/dsp.o
 uart_buf            0x10              build/default/production/main.o
 audio_buffer        0x100             build/default/production/audio.o
 
@@ -403,7 +403,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000     0x2e24
+.text           0x0000000000000000     0x2e92
  *(.vectors)
  .vectors       0x0000000000000000       0x54 /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
                 0x0000000000000000                __vectors
@@ -440,94 +440,94 @@ END GROUP
                 0x00000000000005f4      0x140 build/default/production/dtw.o
                 0x00000000000005f4                template_11
  .progmem.data.template_10
-                0x0000000000000734      0x140 build/default/production/dtw.o
+                0x0000000000000734      0x118 build/default/production/dtw.o
                 0x0000000000000734                template_10
  .progmem.data.template_9
-                0x0000000000000874      0x118 build/default/production/dtw.o
-                0x0000000000000874                template_9
+                0x000000000000084c      0x140 build/default/production/dtw.o
+                0x000000000000084c                template_9
  .progmem.data.template_8
-                0x000000000000098c      0x140 build/default/production/dtw.o
+                0x000000000000098c      0x118 build/default/production/dtw.o
                 0x000000000000098c                template_8
  .progmem.data.template_7
-                0x0000000000000acc      0x140 build/default/production/dtw.o
-                0x0000000000000acc                template_7
+                0x0000000000000aa4       0xa0 build/default/production/dtw.o
+                0x0000000000000aa4                template_7
  .progmem.data.template_6
-                0x0000000000000c0c      0x108 build/default/production/dtw.o
-                0x0000000000000c0c                template_6
+                0x0000000000000b44      0x118 build/default/production/dtw.o
+                0x0000000000000b44                template_6
  .progmem.data.template_5
-                0x0000000000000d14      0x140 build/default/production/dtw.o
-                0x0000000000000d14                template_5
+                0x0000000000000c5c      0x118 build/default/production/dtw.o
+                0x0000000000000c5c                template_5
  .progmem.data.template_4
-                0x0000000000000e54      0x140 build/default/production/dtw.o
-                0x0000000000000e54                template_4
+                0x0000000000000d74      0x140 build/default/production/dtw.o
+                0x0000000000000d74                template_4
  .progmem.data.template_3
-                0x0000000000000f94      0x140 build/default/production/dtw.o
-                0x0000000000000f94                template_3
+                0x0000000000000eb4       0xa0 build/default/production/dtw.o
+                0x0000000000000eb4                template_3
  .progmem.data.template_2
-                0x00000000000010d4      0x138 build/default/production/dtw.o
-                0x00000000000010d4                template_2
+                0x0000000000000f54      0x138 build/default/production/dtw.o
+                0x0000000000000f54                template_2
  .progmem.data.template_1
-                0x000000000000120c       0xa0 build/default/production/dtw.o
-                0x000000000000120c                template_1
+                0x000000000000108c       0xa0 build/default/production/dtw.o
+                0x000000000000108c                template_1
  .progmem.data.template_0
-                0x00000000000012ac      0x100 build/default/production/dtw.o
-                0x00000000000012ac                template_0
+                0x000000000000112c      0x118 build/default/production/dtw.o
+                0x000000000000112c                template_0
  .progmem.data.template_lengths
-                0x00000000000013ac       0x10 build/default/production/dtw.o
-                0x00000000000013ac                template_lengths
+                0x0000000000001244       0x10 build/default/production/dtw.o
+                0x0000000000001244                template_lengths
  .progmem.data.template_labels
-                0x00000000000013bc       0x10 build/default/production/dtw.o
-                0x00000000000013bc                template_labels
+                0x0000000000001254       0x10 build/default/production/dtw.o
+                0x0000000000001254                template_labels
  .progmem.data.word_labels
-                0x00000000000013cc       0x10 build/default/production/dtw.o
-                0x00000000000013cc                word_labels
+                0x0000000000001264       0x10 build/default/production/dtw.o
+                0x0000000000001264                word_labels
  .progmem.data.word_str_7
-                0x00000000000013dc        0x7 build/default/production/dtw.o
+                0x0000000000001274        0x6 build/default/production/dtw.o
  .progmem.data.word_str_6
-                0x00000000000013e3        0x6 build/default/production/dtw.o
+                0x000000000000127a        0x6 build/default/production/dtw.o
  .progmem.data.word_str_5
-                0x00000000000013e9        0x6 build/default/production/dtw.o
+                0x0000000000001280        0x6 build/default/production/dtw.o
  .progmem.data.word_str_4
-                0x00000000000013ef        0x4 build/default/production/dtw.o
+                0x0000000000001286        0x4 build/default/production/dtw.o
  .progmem.data.word_str_3
-                0x00000000000013f3        0x3 build/default/production/dtw.o
+                0x000000000000128a        0x3 build/default/production/dtw.o
  .progmem.data.word_str_2
-                0x00000000000013f6        0x6 build/default/production/dtw.o
+                0x000000000000128d        0x7 build/default/production/dtw.o
  .progmem.data.word_str_1
-                0x00000000000013fc        0x5 build/default/production/dtw.o
+                0x0000000000001294        0x5 build/default/production/dtw.o
  .progmem.data.word_str_0
-                0x0000000000001401        0x5 build/default/production/dtw.o
-                0x0000000000001406                . = ALIGN (0x2)
+                0x0000000000001299        0x5 build/default/production/dtw.o
+                0x000000000000129e                . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x0000000000001406                __ctors_start = .
+                0x000000000000129e                __ctors_start = .
  *(.ctors)
-                0x0000000000001406                __ctors_end = .
-                0x0000000000001406                __dtors_start = .
+                0x000000000000129e                __ctors_end = .
+                0x000000000000129e                __dtors_start = .
  *(.dtors)
-                0x0000000000001406                __dtors_end = .
+                0x000000000000129e                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x0000000000001406        0x0 /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
-                0x0000000000001406                __init
+ .init0         0x000000000000129e        0x0 /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
+                0x000000000000129e                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x0000000000001406        0xc /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
+ .init2         0x000000000000129e        0xc /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
  *(.init2)
  *(.init3)
- .init3         0x0000000000001412        0x8 build/default/production/main.o
-                0x0000000000001412                get_mcusr
+ .init3         0x00000000000012aa        0x8 build/default/production/main.o
+                0x00000000000012aa                get_mcusr
  *(.init3)
  *(.init4)
- .init4         0x000000000000141a       0x16 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_copy_data.o)
-                0x000000000000141a                __do_copy_data
- .init4         0x0000000000001430       0x10 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_clear_bss.o)
-                0x0000000000001430                __do_clear_bss
+ .init4         0x00000000000012b2       0x16 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_copy_data.o)
+                0x00000000000012b2                __do_copy_data
+ .init4         0x00000000000012c8       0x10 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_clear_bss.o)
+                0x00000000000012c8                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -538,175 +538,175 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x0000000000001440        0x8 /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
+ .init9         0x00000000000012d8        0x8 /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
  *(.init9)
  *(.text)
- .text          0x0000000000001448        0x4 /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
-                0x0000000000001448                __vector_12
-                0x0000000000001448                __bad_interrupt
-                0x0000000000001448                __vector_6
-                0x0000000000001448                __vector_3
-                0x0000000000001448                __vector_11
-                0x0000000000001448                __vector_17
-                0x0000000000001448                __vector_19
-                0x0000000000001448                __vector_5
-                0x0000000000001448                __vector_4
-                0x0000000000001448                __vector_9
-                0x0000000000001448                __vector_2
-                0x0000000000001448                __vector_15
-                0x0000000000001448                __vector_8
-                0x0000000000001448                __vector_14
-                0x0000000000001448                __vector_10
-                0x0000000000001448                __vector_18
-                0x0000000000001448                __vector_20
-                0x000000000000144c                . = ALIGN (0x2)
+ .text          0x00000000000012e0        0x4 /opt/microchip/mplabx/v6.30/packs/Microchip/ATmega_DFP/3.5.296/gcc/dev/atmega32/avr5/crtatmega32.o
+                0x00000000000012e0                __vector_12
+                0x00000000000012e0                __bad_interrupt
+                0x00000000000012e0                __vector_6
+                0x00000000000012e0                __vector_3
+                0x00000000000012e0                __vector_11
+                0x00000000000012e0                __vector_17
+                0x00000000000012e0                __vector_19
+                0x00000000000012e0                __vector_5
+                0x00000000000012e0                __vector_4
+                0x00000000000012e0                __vector_9
+                0x00000000000012e0                __vector_2
+                0x00000000000012e0                __vector_15
+                0x00000000000012e0                __vector_8
+                0x00000000000012e0                __vector_14
+                0x00000000000012e0                __vector_10
+                0x00000000000012e0                __vector_18
+                0x00000000000012e0                __vector_20
+                0x00000000000012e4                . = ALIGN (0x2)
  *(.text.*)
  .text.UART_Init
-                0x000000000000144c       0x22 build/default/production/uart.o
-                0x000000000000144c                UART_Init
+                0x00000000000012e4       0x22 build/default/production/uart.o
+                0x00000000000012e4                UART_Init
  .text.UART_TxChar
-                0x000000000000146e        0x8 build/default/production/uart.o
-                0x000000000000146e                UART_TxChar
+                0x0000000000001306        0x8 build/default/production/uart.o
+                0x0000000000001306                UART_TxChar
  .text.UART_TxString
-                0x0000000000001476       0x1e build/default/production/uart.o
-                0x0000000000001476                UART_TxString
+                0x000000000000130e       0x1e build/default/production/uart.o
+                0x000000000000130e                UART_TxString
  .text.UART_TxNum
-                0x0000000000001494       0x3a build/default/production/uart.o
-                0x0000000000001494                UART_TxNum
+                0x000000000000132c       0x3a build/default/production/uart.o
+                0x000000000000132c                UART_TxNum
  .text.UART_sendByte
-                0x00000000000014ce        0x8 build/default/production/uart.o
-                0x00000000000014ce                UART_sendByte
+                0x0000000000001366        0x8 build/default/production/uart.o
+                0x0000000000001366                UART_sendByte
  .text.__vector_7
-                0x00000000000014d6       0x20 build/default/production/main.o
-                0x00000000000014d6                __vector_7
+                0x000000000000136e       0x20 build/default/production/main.o
+                0x000000000000136e                __vector_7
  .text.__vector_1
-                0x00000000000014f6       0x3e build/default/production/main.o
-                0x00000000000014f6                __vector_1
+                0x000000000000138e       0x3e build/default/production/main.o
+                0x000000000000138e                __vector_1
  .text.__vector_16
-                0x0000000000001534       0x98 build/default/production/main.o
-                0x0000000000001534                __vector_16
+                0x00000000000013cc       0x98 build/default/production/main.o
+                0x00000000000013cc                __vector_16
  .text.__vector_13
-                0x00000000000015cc       0x62 build/default/production/main.o
-                0x00000000000015cc                __vector_13
+                0x0000000000001464       0x62 build/default/production/main.o
+                0x0000000000001464                __vector_13
  .text.process_uart_command
-                0x000000000000162e       0x60 build/default/production/main.o
-                0x000000000000162e                process_uart_command
- .text.main     0x000000000000168e      0x1e2 build/default/production/main.o
-                0x000000000000168e                main
+                0x00000000000014c6       0x60 build/default/production/main.o
+                0x00000000000014c6                process_uart_command
+ .text.main     0x0000000000001526      0x1e2 build/default/production/main.o
+                0x0000000000001526                main
  .text.DSP_GetEnergy
-                0x0000000000001870       0x76 build/default/production/dsp.o
-                0x0000000000001870                DSP_GetEnergy
+                0x0000000000001708       0x76 build/default/production/dsp.o
+                0x0000000000001708                DSP_GetEnergy
  .text.DSP_GetZCR
-                0x00000000000018e6       0x74 build/default/production/dsp.o
-                0x00000000000018e6                DSP_GetZCR
+                0x000000000000177e       0x74 build/default/production/dsp.o
+                0x000000000000177e                DSP_GetZCR
  .text.DSP_GetSpectralCentroid
-                0x000000000000195a       0xc6 build/default/production/dsp.o
-                0x000000000000195a                DSP_GetSpectralCentroid
+                0x00000000000017f2       0xc6 build/default/production/dsp.o
+                0x00000000000017f2                DSP_GetSpectralCentroid
  .text.DSP_GetDominantFreq
-                0x0000000000001a20       0x68 build/default/production/dsp.o
-                0x0000000000001a20                DSP_GetDominantFreq
+                0x00000000000018b8       0x68 build/default/production/dsp.o
+                0x00000000000018b8                DSP_GetDominantFreq
  .text.DSP_ExtractFeatures
-                0x0000000000001a88      0x248 build/default/production/dsp.o
-                0x0000000000001a88                DSP_ExtractFeatures
+                0x0000000000001920      0x2c4 build/default/production/dsp.o
+                0x0000000000001920                DSP_ExtractFeatures
  .text.DEBUG_PrintFrame
-                0x0000000000001cd0       0x6c build/default/production/dsp.o
-                0x0000000000001cd0                DEBUG_PrintFrame
- .text.sin_pgm  0x0000000000001d3c       0x22 build/default/production/fix_fft.o
- .text.fix_fft  0x0000000000001d5e      0x2de build/default/production/fix_fft.o
-                0x0000000000001d5e                fix_fft
+                0x0000000000001be4       0x74 build/default/production/dsp.o
+                0x0000000000001be4                DEBUG_PrintFrame
+ .text.sin_pgm  0x0000000000001c58       0x22 build/default/production/fix_fft.o
+ .text.fix_fft  0x0000000000001c7a      0x2de build/default/production/fix_fft.o
+                0x0000000000001c7a                fix_fft
  .text.Audio_Init
-                0x000000000000203c        0xc build/default/production/audio.o
-                0x000000000000203c                Audio_Init
+                0x0000000000001f58        0xc build/default/production/audio.o
+                0x0000000000001f58                Audio_Init
  .text.TIMER1_init_CTC_8kHz
-                0x0000000000002048       0x1c build/default/production/audio.o
-                0x0000000000002048                TIMER1_init_CTC_8kHz
+                0x0000000000001f64       0x1c build/default/production/audio.o
+                0x0000000000001f64                TIMER1_init_CTC_8kHz
  .text.DTW_GetWordString
-                0x0000000000002064       0x18 build/default/production/dtw.o
-                0x0000000000002064                DTW_GetWordString
+                0x0000000000001f80       0x18 build/default/production/dtw.o
+                0x0000000000001f80                DTW_GetWordString
  .text.DTW_ClassifyWord
-                0x000000000000207c      0xa44 build/default/production/dtw.o
-                0x000000000000207c                DTW_ClassifyWord
+                0x0000000000001f98      0xb96 build/default/production/dtw.o
+                0x0000000000001f98                DTW_ClassifyWord
  .text.LCD_write4
-                0x0000000000002ac0       0x2c build/default/production/lcd.o
+                0x0000000000002b2e       0x2c build/default/production/lcd.o
  .text.LCD_Command
-                0x0000000000002aec       0x26 build/default/production/lcd.o
-                0x0000000000002aec                LCD_Command
+                0x0000000000002b5a       0x26 build/default/production/lcd.o
+                0x0000000000002b5a                LCD_Command
  .text.LCD_Char
-                0x0000000000002b12       0x24 build/default/production/lcd.o
-                0x0000000000002b12                LCD_Char
+                0x0000000000002b80       0x24 build/default/production/lcd.o
+                0x0000000000002b80                LCD_Char
  .text.LCD_String
-                0x0000000000002b36       0x1e build/default/production/lcd.o
-                0x0000000000002b36                LCD_String
+                0x0000000000002ba4       0x1e build/default/production/lcd.o
+                0x0000000000002ba4                LCD_String
  .text.LCD_Clear
-                0x0000000000002b54       0x12 build/default/production/lcd.o
-                0x0000000000002b54                LCD_Clear
+                0x0000000000002bc2       0x12 build/default/production/lcd.o
+                0x0000000000002bc2                LCD_Clear
  .text.LCD_Init
-                0x0000000000002b66       0x38 build/default/production/lcd.o
-                0x0000000000002b66                LCD_Init
+                0x0000000000002bd4       0x38 build/default/production/lcd.o
+                0x0000000000002bd4                LCD_Init
  .text.LCD_SetCursor
-                0x0000000000002b9e       0x14 build/default/production/lcd.o
-                0x0000000000002b9e                LCD_SetCursor
+                0x0000000000002c0c       0x14 build/default/production/lcd.o
+                0x0000000000002c0c                LCD_SetCursor
  .text.bus_write
-                0x0000000000002bb2       0x18 build/default/production/sram.o
+                0x0000000000002c20       0x18 build/default/production/sram.o
  .text.SRAM_init
-                0x0000000000002bca       0x12 build/default/production/sram.o
-                0x0000000000002bca                SRAM_init
+                0x0000000000002c38       0x12 build/default/production/sram.o
+                0x0000000000002c38                SRAM_init
  .text.SRAM_write
-                0x0000000000002bdc       0x44 build/default/production/sram.o
-                0x0000000000002bdc                SRAM_write
+                0x0000000000002c4a       0x44 build/default/production/sram.o
+                0x0000000000002c4a                SRAM_write
  .text.SRAM_read
-                0x0000000000002c20       0x46 build/default/production/sram.o
-                0x0000000000002c20                SRAM_read
+                0x0000000000002c8e       0x46 build/default/production/sram.o
+                0x0000000000002c8e                SRAM_read
  .text.INT0_init
-                0x0000000000002c66       0x12 build/default/production/ext_int.o
-                0x0000000000002c66                INT0_init
+                0x0000000000002cd4       0x12 build/default/production/ext_int.o
+                0x0000000000002cd4                INT0_init
  .text.libgcc.mul
-                0x0000000000002c78       0x20 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_mulsi3.o)
-                0x0000000000002c78                __mulsi3
+                0x0000000000002ce6       0x20 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_mulsi3.o)
+                0x0000000000002ce6                __mulsi3
  .text.libgcc.div
-                0x0000000000002c98       0x28 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_udivmodhi4.o)
-                0x0000000000002c98                __udivmodhi4
+                0x0000000000002d06       0x28 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_udivmodhi4.o)
+                0x0000000000002d06                __udivmodhi4
  .text.libgcc.div
-                0x0000000000002cc0       0x28 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_divmodhi4.o)
-                0x0000000000002cc0                __divmodhi4
-                0x0000000000002cc0                _div
+                0x0000000000002d2e       0x28 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_divmodhi4.o)
+                0x0000000000002d2e                __divmodhi4
+                0x0000000000002d2e                _div
  .text.libgcc.div
-                0x0000000000002ce8       0x44 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_udivmodsi4.o)
-                0x0000000000002ce8                __udivmodsi4
+                0x0000000000002d56       0x44 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_udivmodsi4.o)
+                0x0000000000002d56                __udivmodsi4
  .text.libgcc.mul
-                0x0000000000002d2c       0x10 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_mulhisi3.o)
-                0x0000000000002d2c                __mulhisi3
+                0x0000000000002d9a       0x10 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_mulhisi3.o)
+                0x0000000000002d9a                __mulhisi3
  .text.libgcc.mul
-                0x0000000000002d3c       0x1e /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_umulhisi3.o)
-                0x0000000000002d3c                __umulhisi3
+                0x0000000000002daa       0x1e /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_umulhisi3.o)
+                0x0000000000002daa                __umulhisi3
  .text.libgcc.mul
-                0x0000000000002d5a        0xe /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_usmulhisi3.o)
-                0x0000000000002d5a                __usmulhisi3
-                0x0000000000002d5e                __usmulhisi3_tail
+                0x0000000000002dc8        0xe /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_usmulhisi3.o)
+                0x0000000000002dc8                __usmulhisi3
+                0x0000000000002dcc                __usmulhisi3_tail
  .text.libgcc.mul
-                0x0000000000002d68       0x16 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_muluhisi3.o)
-                0x0000000000002d68                __muluhisi3
+                0x0000000000002dd6       0x16 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_muluhisi3.o)
+                0x0000000000002dd6                __muluhisi3
  .text.avr-libc
-                0x0000000000002d7e        0xe /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strcpy_P.o)
-                0x0000000000002d7e                strcpy_P
+                0x0000000000002dec        0xe /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strcpy_P.o)
+                0x0000000000002dec                strcpy_P
  .text.avr-libc
-                0x0000000000002d8c       0x12 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strcmp.o)
-                0x0000000000002d8c                strcmp
+                0x0000000000002dfa       0x12 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strcmp.o)
+                0x0000000000002dfa                strcmp
  .text.avr-libc
-                0x0000000000002d9e       0x1e /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ltoa_ncheck.o)
-                0x0000000000002d9e                __ltoa_ncheck
+                0x0000000000002e0c       0x1e /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ltoa_ncheck.o)
+                0x0000000000002e0c                __ltoa_ncheck
  .text.avr-libc
-                0x0000000000002dbc       0x44 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ultoa_ncheck.o)
-                0x0000000000002dbc                __ultoa_ncheck
-                0x0000000000002dbe                __ultoa_common
+                0x0000000000002e2a       0x44 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ultoa_ncheck.o)
+                0x0000000000002e2a                __ultoa_ncheck
+                0x0000000000002e2c                __ultoa_common
  .text.avr-libc
-                0x0000000000002e00       0x20 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strrev.o)
-                0x0000000000002e00                strrev
-                0x0000000000002e20                . = ALIGN (0x2)
+                0x0000000000002e6e       0x20 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strrev.o)
+                0x0000000000002e6e                strrev
+                0x0000000000002e8e                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000000000002e20        0x0 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
-                0x0000000000002e20                exit
-                0x0000000000002e20                _exit
+ .fini9         0x0000000000002e8e        0x0 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
+                0x0000000000002e8e                exit
+                0x0000000000002e8e                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -725,11 +725,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000000000002e20        0x4 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
+ .fini0         0x0000000000002e8e        0x4 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x0000000000002e24                _etext = .
+                0x0000000000002e92                _etext = .
 
-.data           0x0000000000800060      0x146 load address 0x0000000000002e24
+.data           0x0000000000800060      0x164 load address 0x0000000000002e92
                 0x0000000000800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -744,65 +744,66 @@ END GROUP
  .rodata.DEBUG_PrintFrame.str1.1
                 0x000000000080011b        0x9 build/default/production/dsp.o
  .rodata.DTW_ClassifyWord.str1.1
-                0x0000000000800124       0x81 build/default/production/dtw.o
-                                         0x89 (size before relaxing)
+                0x0000000000800124       0xa0 build/default/production/dtw.o
+                                         0xa5 (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x00000000008001a6                . = ALIGN (0x2)
- *fill*         0x00000000008001a5        0x1 
-                0x00000000008001a6                _edata = .
-                0x00000000008001a6                PROVIDE (__data_end, .)
+                0x00000000008001c4                . = ALIGN (0x2)
+                0x00000000008001c4                _edata = .
+                0x00000000008001c4                PROVIDE (__data_end, .)
 
-.bss            0x00000000008001a6      0x25b
-                0x00000000008001a6                PROVIDE (__bss_start, .)
+.bss            0x00000000008001c4      0x284
+                0x00000000008001c4                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.VideoRecord
-                0x00000000008001a6        0x1 build/default/production/main.o
-                0x00000000008001a6                VideoRecord
+                0x00000000008001c4        0x1 build/default/production/main.o
+                0x00000000008001c4                VideoRecord
  .bss.cmd_ready
-                0x00000000008001a7        0x1 build/default/production/main.o
-                0x00000000008001a7                cmd_ready
- .bss.uart_idx  0x00000000008001a8        0x1 build/default/production/main.o
-                0x00000000008001a8                uart_idx
+                0x00000000008001c5        0x1 build/default/production/main.o
+                0x00000000008001c5                cmd_ready
+ .bss.uart_idx  0x00000000008001c6        0x1 build/default/production/main.o
+                0x00000000008001c6                uart_idx
  .bss.write_index
-                0x00000000008001a9        0x2 build/default/production/main.o
-                0x00000000008001a9                write_index
+                0x00000000008001c7        0x2 build/default/production/main.o
+                0x00000000008001c7                write_index
  .bss.sample_ready
-                0x00000000008001ab        0x1 build/default/production/main.o
-                0x00000000008001ab                sample_ready
+                0x00000000008001c9        0x1 build/default/production/main.o
+                0x00000000008001c9                sample_ready
  .bss.audio_sample
-                0x00000000008001ac        0x1 build/default/production/main.o
-                0x00000000008001ac                audio_sample
+                0x00000000008001ca        0x1 build/default/production/main.o
+                0x00000000008001ca                audio_sample
  .bss.process_start
-                0x00000000008001ad        0x1 build/default/production/main.o
-                0x00000000008001ad                process_start
+                0x00000000008001cb        0x1 build/default/production/main.o
+                0x00000000008001cb                process_start
  .bss.prev_recording
-                0x00000000008001ae        0x1 build/default/production/main.o
-                0x00000000008001ae                prev_recording
+                0x00000000008001cc        0x1 build/default/production/main.o
+                0x00000000008001cc                prev_recording
  .bss.recording
-                0x00000000008001af        0x1 build/default/production/main.o
-                0x00000000008001af                recording
+                0x00000000008001cd        0x1 build/default/production/main.o
+                0x00000000008001cd                recording
+ .bss.prev_energy.1788
+                0x00000000008001ce        0x1 build/default/production/dsp.o
  .bss.live_frame_count
-                0x00000000008001b0        0x1 build/default/production/dsp.o
-                0x00000000008001b0                live_frame_count
+                0x00000000008001cf        0x1 build/default/production/dsp.o
+                0x00000000008001cf                live_frame_count
  *(COMMON)
- COMMON         0x00000000008001b1       0x10 build/default/production/main.o
-                0x00000000008001b1                uart_buf
- COMMON         0x00000000008001c1      0x140 build/default/production/dsp.o
-                0x00000000008001c1                live_features
- COMMON         0x0000000000800301      0x100 build/default/production/audio.o
-                0x0000000000800301                audio_buffer
-                0x0000000000800401                PROVIDE (__bss_end, .)
-                0x0000000000002e24                __data_load_start = LOADADDR (.data)
-                0x0000000000002f6a                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00000000008001d0       0x10 build/default/production/main.o
+                0x00000000008001d0                uart_buf
+ COMMON         0x00000000008001e0      0x168 build/default/production/dsp.o
+                0x00000000008001e0                live_features
+ COMMON         0x0000000000800348      0x100 build/default/production/audio.o
+                0x0000000000800348                audio_buffer
+                0x0000000000800448                PROVIDE (__bss_end, .)
+                0x0000000000002e92                __data_load_start = LOADADDR (.data)
+                0x0000000000002ff6                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0000000000800401        0x1
+.noinit         0x0000000000800448        0x1
                 [!provide]                        PROVIDE (__noinit_start, .)
  *(.noinit*)
- .noinit        0x0000000000800401        0x1 build/default/production/main.o
-                0x0000000000800401                mcusr_mirror
+ .noinit        0x0000000000800448        0x1 build/default/production/main.o
+                0x0000000000800448                mcusr_mirror
                 [!provide]                        PROVIDE (__noinit_end, .)
-                0x0000000000800402                _end = .
+                0x0000000000800449                _end = .
                 [!provide]                        PROVIDE (__heap_start, .)
 
 .eeprom         0x0000000000810000        0x0

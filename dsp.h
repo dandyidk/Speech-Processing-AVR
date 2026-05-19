@@ -6,7 +6,7 @@
 #define FRAME_SIZE 200
 
 // RAM SAVER: Array is now uint8_t (320 bytes total instead of 1,280)
-extern uint8_t live_features[40][8];
+extern uint8_t live_features[40][9];
 extern uint8_t live_frame_count;
 
 // Process a 256-sample frame starting at the given index

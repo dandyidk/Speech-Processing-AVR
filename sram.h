@@ -16,7 +16,7 @@ uint8_t SRAM_read(uint16_t addr);
 
 // debug versions (step-by-step)
 void SRAM_debug_write(uint16_t addr, uint8_t data);
-uint8_t SRAM_debug_read(uint16_t addr);
+uint8_t SRAM_debug_read(uint16_t addr); 
 void SRAM_write32(uint16_t addr, uint32_t val);
 uint32_t SRAM_read32(uint16_t addr);
 #endif

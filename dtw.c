@@ -7,8 +7,6 @@
 #include "sram.h"
 #include <string.h>
 
-
-
 static uint32_t DTW_Distance(uint8_t live_len, uint8_t tpl_idx)
 {
     uint8_t tpl_len = pgm_read_byte(&template_lengths[tpl_idx]);
@@ -112,8 +110,8 @@ uint8_t DTW_ClassifyWord(uint8_t num_frames)
         best_word_dist[w] = 0xFFFFFFFF;
         best_word_tpl[w] = 0xFF;
     }
-//================= VAD =====================
-    //find speech boundaries using STE (feat[0])
+    //================= VAD =====================
+    // find speech boundaries using STE (feat[0])
     uint8_t first = 0;
     for (uint8_t f = 0; f < num_frames; f++)
     {
@@ -158,33 +156,56 @@ uint8_t DTW_ClassifyWord(uint8_t num_frames)
         uint8_t tpl_len = pgm_read_byte(&template_lengths[t]);
 
         uint32_t dist = DTW_Distance(num_frames, t);
+
+        // Global best template
         if (dist < best_dist)
         {
             best_dist = dist;
             best_tpl_idx = t;
         }
+
+        // Word corresponding to this template
+        uint8_t word = pgm_read_byte(&template_labels[t]);
+
+        // Best template for this word
+        if (dist < best_word_dist[word])
+        {
+            best_word_dist[word] = dist;
+            best_word_tpl[word] = t;
+        }
+
         UART_TxString("t");
         UART_TxNum(t);
+
         UART_TxString(" len=");
         UART_TxNum(tpl_len);
+
         UART_TxString(" d=");
         UART_TxNum(dist);
+
         UART_TxString("\r\n");
     }
     UART_TxString("\r\n--- WORD RANKING ---\r\n");
+        uint8_t used[N_WORDS] = {0};
 
-    uint8_t used[N_WORDS] = {0};
 
+    uint8_t word_rank[N_WORDS];
+
+    // Initialize ranks to invalid
+    for (uint8_t i = 0; i < N_WORDS; i++)
+    {
+        word_rank[i] = 0xFF;
+    }
+
+    // Generate rankings
     for (uint8_t rank = 0; rank < N_WORDS; rank++)
     {
-
         uint32_t rank_best_dist = 0xFFFFFFFF;
         uint8_t rank_best_word = 0xFF;
 
         // Find next-best unused word
         for (uint8_t w = 0; w < N_WORDS; w++)
         {
-
             if (used[w])
                 continue;
 
@@ -200,18 +221,27 @@ uint8_t DTW_ClassifyWord(uint8_t num_frames)
 
         used[rank_best_word] = 1;
 
-        char wbuf[16];
-        DTW_GetWordString(rank_best_word, wbuf);
+        // Store actual ranking
+        word_rank[rank_best_word] = rank + 1;
+    }
+    UART_TxString("\r\n=== WORD RANKINGS ===\r\n");
 
-        UART_TxNum(rank + 1);
-        UART_TxString(": ");
+    for (uint8_t w = 0; w < N_WORDS; w++)
+    {
+        char wbuf[16];
+        DTW_GetWordString(w, wbuf);
+
+        UART_TxString("#");
+        UART_TxNum(word_rank[w]);
+
+        UART_TxString("  ");
         UART_TxString(wbuf);
 
         UART_TxString("  tpl=");
-        UART_TxNum(best_word_tpl[rank_best_word]);
+        UART_TxNum(best_word_tpl[w]);
 
         UART_TxString("  dist=");
-        UART_TxNum(best_word_dist[rank_best_word]);
+        UART_TxNum(best_word_dist[w]);
 
         UART_TxString("\r\n");
     }

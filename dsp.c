@@ -2,8 +2,8 @@
 #include "audio.h"
 #include <stdlib.h>
 #include "uart.h"
-uint8_t live_features[40][8];
-uint8_t live_frame_count=0;
+uint8_t live_features[40][9];
+uint8_t live_frame_count = 0;
 extern int fix_fft(int8_t fr[], int8_t fi[], int16_t m, int16_t inverse);
 
 uint8_t DSP_GetEnergy(uint8_t start_idx)
@@ -17,6 +17,14 @@ uint8_t DSP_GetEnergy(uint8_t start_idx)
     // avg in range [0, 16384], scale to [0, 255]
     uint32_t avg = (uint32_t)sum_sq / 256;
     return (avg >= 16384) ? 255 : (uint8_t)((avg * 255UL) / 16384);
+}
+
+static inline uint8_t fast_log(uint16_t x)
+{
+    uint8_t r = 0;
+    while (x >>= 1)
+        r++;
+    return r;
 }
 
 uint8_t DSP_GetZCR(uint8_t start_idx)
@@ -81,7 +89,8 @@ void DSP_ExtractFeatures(uint8_t start_idx, uint8_t frame_number)
     uint8_t *feat = live_features[frame_number];
 
     // 1. STE  2. ZCR
-    feat[0] = DSP_GetEnergy(start_idx);
+    uint8_t energy = DSP_GetEnergy(start_idx);
+    feat[0] = energy;
     feat[1] = DSP_GetZCR(start_idx);
 
     // FFT
@@ -95,13 +104,19 @@ void DSP_ExtractFeatures(uint8_t start_idx, uint8_t frame_number)
 
     // Magnitude
     uint8_t mag[128];
+
     for (uint8_t i = 0; i < 128; i++)
     {
-        uint8_t a = (uint8_t)abs(real[i]);
-        uint8_t b = (uint8_t)abs(imag[i]);
-        uint8_t mx = (a > b) ? a : b;
-        uint8_t mn = (a < b) ? a : b;
-        mag[i] = mx + (mn >> 1);
+        uint16_t a = abs(real[i]);
+        uint16_t b = abs(imag[i]);
+
+        uint16_t mx = (a > b) ? a : b;
+        uint16_t mn = (a < b) ? a : b;
+
+        uint16_t raw_mag = mx + (mn >> 1);
+
+        // log compression (critical improvement)
+        mag[i] = fast_log(raw_mag);
     }
 
     // 3. Spectral Centroid  4. Dominant Frequency
@@ -121,10 +136,17 @@ void DSP_ExtractFeatures(uint8_t start_idx, uint8_t frame_number)
     for (uint8_t i = 27; i < 128; i++)
         b3 += mag[i];
 
-    feat[4] = (uint8_t)((b0 * 255U) / 1020U);
-    feat[5] = (uint8_t)((b1 * 255U) / 1785U);
-    feat[6] = (uint8_t)((b2 * 255U) / 3825U);
-    feat[7] = (uint8_t)((b3 * 255UL) / 25755UL);
+    feat[4] = (uint8_t)((b0 * 255U) / 20U);
+    feat[5] = (uint8_t)((b1 * 255U) / 50U);
+    feat[6] = (uint8_t)((b2 * 255U) / 120U);
+    feat[7] = (uint8_t)((b3 * 255UL) / 900U);
+    static uint8_t prev_energy = 0;
+
+    int16_t delta = (int16_t)energy - (int16_t)prev_energy;
+
+    feat[8] = (uint8_t)(delta + 128); // bias to unsigned
+
+    prev_energy = energy;
 }
 
 void DEBUG_PrintFrame(uint8_t frame_number)
@@ -132,10 +154,10 @@ void DEBUG_PrintFrame(uint8_t frame_number)
     UART_TxString("F");
     UART_TxNum(frame_number);
     UART_TxString(":[");
-    for (uint8_t f = 0; f < 8; f++)
+    for (uint8_t f = 0; f < 9; f++)
     {
         UART_TxNum(live_features[frame_number][f]);
-        if (f < 7)
+        if (f < 8)
             UART_TxChar(',');
     }
     UART_TxString("]\r\n");
